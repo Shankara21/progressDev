@@ -14,6 +14,9 @@ module.exports = function (sequelize, DataTypes) {
       name: {
         type: DataTypes.STRING,
       },
+      progress: {
+        type: DataTypes.FLOAT,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
