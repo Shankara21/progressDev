@@ -6,6 +6,6 @@ var router = express.Router();
 router.post("/test", ProjectDetailsController.update);
 router.get("/", ProjectDetailsController.index);
 router.post("/", ProjectDetailsController.create);
-router.get("/status/:status", ProjectDetailsController.getProjectByStatus);
+router.get("/status/:status/:projectId", ProjectDetailsController.getProjectByStatus);
 
 module.exports = router;

@@ -5,10 +5,6 @@ const connect = require("./../config/connection");
 module.exports = {
   index: async (req, res) => {
     try {
-      const filter = await connect.progressDev.query(
-        `Select categoryId, projectId from mstprojectdetails where projectId=1`,
-        { type: QueryTypes.SELECT }
-      );
       const test = await sequelize.query(
         `Select categoryId, projectId from mstprojectdetails where projectId=1`,
         { type: QueryTypes.SELECT }
@@ -66,7 +62,13 @@ module.exports = {
   },
   getProjectByStatus: async (req, res) => {
     try {
-      const { status } = req.params;
+      const { status, projectId } = req.params;
+      const projectByProjectId = await ProjectDetails.findAll({
+        where: { projectId: projectId },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
       const projectDone = await ProjectDetails.findAll({
         where: { status: status },
         attributes: {
@@ -87,7 +89,12 @@ module.exports = {
           },
         ],
       });
-      res.status(200).json(projectDone);
+      const amount = projectByProjectId.length;
+      const valuePerDocument = 100 / amount;
+      const valueDone = valuePerDocument * projectDone.length;
+      res
+        .status(200)
+        .json({ projectDone, valueDone, valuePerDocument, amount });
     } catch (error) {
       console.log(error);
     }
