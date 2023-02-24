@@ -70,7 +70,7 @@ module.exports = {
         },
       });
       const projectDone = await ProjectDetails.findAll({
-        where: { status: status },
+        where: { status: status, projectId: projectId },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
@@ -99,5 +99,4 @@ module.exports = {
       console.log(error);
     }
   },
- 
 };
