@@ -44,22 +44,7 @@ module.exports = {
       res.status(500).json(error);
     }
   },
-  update: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status, projectId } = req.body;
 
-      const projectDetails = await sequelize.query(
-        `SELECT * FROM MstProjectDetails WHERE projectId = ${projectId} AND categoryId = 1`,
-        {
-          type: QueryTypes.SELECT,
-        }
-      );
-      res.status(200).json(projectDetails);
-    } catch (error) {
-      console.log(error);
-    }
-  },
   getProjectByStatus: async (req, res) => {
     try {
       const { status, projectId } = req.params;
@@ -95,6 +80,72 @@ module.exports = {
       res
         .status(200)
         .json({ projectDone, valueDone, valuePerDocument, amount });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const projectDetails = await ProjectDetails.findOne({
+        where: {
+          projectId: req.body.projectId,
+          categoryId: req.body.categoryId,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Project,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+          {
+            model: Category,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
+      });
+      const updateProjectDetails = await ProjectDetails.update(
+        {
+          status: 1,
+          document: `uploads/${req.file.filename}`,
+        },
+        {
+          where: {
+            projectId: req.body.projectId,
+            categoryId: req.body.categoryId,
+          },
+        }
+      );
+      const countByStatus1 = await ProjectDetails.count({
+        where: {
+          projectId: req.body.projectId,
+          status: 1,
+        },
+      });
+      const countByProjectId = await ProjectDetails.count({
+        where: {
+          projectId: req.body.projectId,
+        },
+      });
+      const valuePerDocument = 100 / countByProjectId;
+      const valueDone = valuePerDocument.toFixed(2) * countByStatus1;
+      const updateProject = await Project.update(
+        {
+          progress: valueDone,
+        },
+        {
+          where: {
+            id: req.body.projectId,
+          },
+        }
+      );
+      res.status(200).json({ updateProject, updateProjectDetails });
+      res.status(200).json({ valuePerDocument, valueDone });
     } catch (error) {
       console.log(error);
     }
