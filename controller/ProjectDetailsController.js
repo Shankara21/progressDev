@@ -109,6 +109,7 @@ module.exports = {
           },
         ],
       });
+      // res.json(projectDetails);
       const updateProjectDetails = await ProjectDetails.update(
         {
           status: 1,
