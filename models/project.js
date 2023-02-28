@@ -1,4 +1,4 @@
-module.exports = function (sequelize, DataTypes) { 
+module.exports = function (sequelize, DataTypes) {
   const projectDetails = sequelize.define("projectDetails", {
     timestamp: false,
   });
@@ -17,6 +17,9 @@ module.exports = function (sequelize, DataTypes) {
       progress: {
         type: DataTypes.FLOAT,
       },
+      obstacle: {
+        type: DataTypes.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -30,6 +33,6 @@ module.exports = function (sequelize, DataTypes) {
       tableName: "MstProjects",
     }
   );
-  Project.hasMany(projectDetails, { foreignKey: 'projectId' });
+  Project.hasMany(projectDetails, { foreignKey: "projectId" });
   return Project;
-}
+};

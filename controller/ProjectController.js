@@ -26,4 +26,20 @@ module.exports = {
       console.log(error);
     }
   },
+  createObstacle: async (req, res) => {
+    try {
+      const { obstacle, id } = req.body;
+      const updateProject = await Project.update(
+        {
+          obstacle: obstacle,
+        },
+        {
+          where: { id },
+        }
+      );
+      res.status(200).json(updateProject);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

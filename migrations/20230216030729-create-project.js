@@ -15,6 +15,9 @@ module.exports = {
       progress: {
         type: Sequelize.FLOAT
       },
+      obstacle: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
