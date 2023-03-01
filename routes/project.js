@@ -3,8 +3,9 @@ const ProjectController = require('../controller/ProjectController');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', ProjectController.index);
-router.get('/:id', ProjectController.show);
+router.get('/filter/:section', ProjectController.index);
+router.get('/find/:id', ProjectController.show);
 router.post('/createObstacle', ProjectController.createObstacle);
+router.get('/index', ProjectController.getAll);
 
 module.exports = router;

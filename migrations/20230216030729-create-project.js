@@ -18,6 +18,13 @@ module.exports = {
       obstacle: {
         type: Sequelize.STRING
       },
+      sectionId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'MstSections',
+          key: 'id'
+        }
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

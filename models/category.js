@@ -2,7 +2,9 @@ module.exports = function (sequelize, DataTypes) {
   const projectDetails = sequelize.define("projectDetails", {
     timestamp: false,
   });
-  const Section = sequelize.define("Section", { timestamp: false });
+  const SectionCategory = sequelize.define("SectionCategory", {
+    timestamp: false,
+  });
   const Category = sequelize.define(
     "Category",
     {
@@ -32,6 +34,6 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
   Category.hasMany(projectDetails, { foreignKey: "categoryId" });
-  Category.belongsTo(Section, { foreignKey: "sectionId" });
+  Category.hasMany(SectionCategory, { foreignKey: "categoryId" });
   return Category;
 };

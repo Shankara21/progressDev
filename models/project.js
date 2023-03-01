@@ -2,6 +2,7 @@ module.exports = function (sequelize, DataTypes) {
   const projectDetails = sequelize.define("projectDetails", {
     timestamp: false,
   });
+  const Section = sequelize.define("Section", { timestamp: false });
   const Project = sequelize.define(
     "Project",
     {
@@ -20,6 +21,13 @@ module.exports = function (sequelize, DataTypes) {
       obstacle: {
         type: DataTypes.STRING,
       },
+      sectionId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "MstSections",
+          key: "id",
+        },
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -34,5 +42,6 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
   Project.hasMany(projectDetails, { foreignKey: "projectId" });
+  Project.belongsTo(Section, { foreignKey: "sectionId" });
   return Project;
 };

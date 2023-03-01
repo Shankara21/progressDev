@@ -1,6 +1,7 @@
 const { QueryTypes } = require("sequelize");
 const { Category, Project, ProjectDetails, sequelize } = require("../models");
 const connect = require("./../config/connection");
+const fs = require("fs");
 
 module.exports = {
   index: async (req, res) => {
@@ -18,8 +19,8 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      const { name, category } = req.body;
-      const project = await Project.create({ name });
+      const { name, category, sectionId } = req.body;
+      const project = await Project.create({ name, sectionId });
       // find latest project
       const latestProject = await Project.findOne({
         order: [["id", "DESC"]],
@@ -147,6 +148,40 @@ module.exports = {
       );
       res.status(200).json({ updateProject, updateProjectDetails });
       res.status(200).json({ valuePerDocument, valueDone });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  deleteProject: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const countByProjectId = await ProjectDetails.count({
+        where: {
+          projectId: id,
+        },
+      });
+      for (let i = 0; i < countByProjectId; i++) {
+        const projectDetailsFound = await ProjectDetails.findOne({
+          where: {
+            projectId: id,
+          },
+        });
+        // menghapus file yang ada di folder uploads
+        if (projectDetailsFound.document) {
+          fs.unlinkSync(`public/${projectDetailsFound.document}`);
+        }
+        await ProjectDetails.destroy({
+          where: {
+            id: projectDetailsFound.id,
+          },
+        });
+      }
+      await Project.destroy({
+        where: {
+          id,
+        },
+      });
+      res.status(200).json({ message: "success" });
     } catch (error) {
       console.log(error);
     }

@@ -23,5 +23,6 @@ router.get(
   ProjectDetailsController.getProjectByStatus
 );
 router.put("/", upload.single("document"), ProjectDetailsController.update);
+router.delete("/:id", ProjectDetailsController.deleteProject);
 
 module.exports = router;

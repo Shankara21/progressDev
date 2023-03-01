@@ -1,14 +1,62 @@
-const { Project } = require("../models");
+const { Project, Section } = require("../models");
 
 module.exports = {
+  getAll: async (req, res) => {
+    try {
+      const amount = 4;
+      let projects = [];
+      for (let i = 1; i <= amount; i++) {
+        const project = await Project.findAll({
+          where: { sectionId: i },
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: Section,
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+            },
+          ],
+        });
+        const section = await Section.findOne({
+          where: { id: i },
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          }
+        })
+        projects.push({section, project});
+      }
+      res.status(200).json(projects);
+    } catch (error) {
+      console.log(error);
+    }
+  },
   index: async (req, res) => {
     try {
-      const project = await Project.findAll({
+      const { section } = req.params;
+      const sectionFound = await Section.findOne({
+        where: { code: section },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
       });
-      res.status(200).json(project);
+      const projects = await Project.findAll({
+        where: { sectionId: sectionFound.id },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+        include: [
+          {
+            model: Section,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
+      });
+      res.json({ projects, sectionFound });
     } catch (error) {
       console.log(error);
     }
