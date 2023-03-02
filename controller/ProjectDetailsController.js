@@ -167,9 +167,13 @@ module.exports = {
           },
         });
         // menghapus file yang ada di folder uploads
-        if (projectDetailsFound.document) {
-          fs.unlinkSync(`public/${projectDetailsFound.document}`);
-        }
+        // membaca file yang ada di folder uploads
+        fs.readdirSync("public/uploads").forEach((file) => {
+          // menghapus file yang ada di folder uploads
+          if (projectDetailsFound.document ) {
+            fs.unlinkSync(`public/${projectDetailsFound.document}`);
+          }
+        });
         await ProjectDetails.destroy({
           where: {
             id: projectDetailsFound.id,
