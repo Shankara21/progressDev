@@ -1,4 +1,5 @@
 const { Project, Section } = require("../models");
+const { Op } = require("sequelize").Sequelize;
 
 module.exports = {
   getAll: async (req, res) => {
@@ -24,9 +25,9 @@ module.exports = {
           where: { id: i },
           attributes: {
             exclude: ["createdAt", "updatedAt"],
-          }
-        })
-        projects.push({section, project});
+          },
+        });
+        projects.push({ section, project });
       }
       res.status(200).json(projects);
     } catch (error) {
@@ -45,7 +46,7 @@ module.exports = {
       const projects = await Project.findAll({
         where: { sectionId: sectionFound.id },
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["updatedAt"],
         },
         include: [
           {
@@ -86,6 +87,98 @@ module.exports = {
         }
       );
       res.status(200).json(updateProject);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  filterByYear: async (req, res) => {
+    try {
+      const { year, section } = req.params;
+      const sectionFound = await Section.findOne({
+        where: { code: section },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+      const projects = await Project.findAll({
+        where: {
+          sectionId: sectionFound.id,
+          createdAt: {
+            [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+          },
+        },
+        attributes: {
+          exclude: ["updatedAt"],
+        },
+        include: [
+          {
+            model: Section,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
+      });
+      // const projects = await Project.findAll({
+      //   // mengambil dari created at jadi tahun
+      //   where: {
+      //     createdAt: {
+      //       [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+      //     }
+      //   },
+      //   attributes: {
+      //     exclude: ["createdAt", "updatedAt"],
+      //   },
+      //   include: [
+      //     {
+      //       model: Section,
+      //       attributes: {
+      //         exclude: ["createdAt", "updatedAt"],
+      //       },
+      //     },
+      //   ],
+      // });
+      res.status(200).json({ projects, sectionFound });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  filterAllProject: async (req, res) => {
+    try {
+      const { year } = req.params;
+      const amount = 4;
+      let projects = [];
+      for (let i = 1; i <= amount; i++) {
+        const project = await Project.findAll({
+          where: {
+            sectionId: i,
+            createdAt: {
+              [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: Section,
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+            },
+          ],
+        });
+        const section = await Section.findOne({
+          where: { id: i },
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        });
+        projects.push({ section, project });
+      }
+      res.status(200).json(projects);
     } catch (error) {
       console.log(error);
     }

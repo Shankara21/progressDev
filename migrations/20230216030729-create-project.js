@@ -1,41 +1,44 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('MstProjects', {
+    await queryInterface.createTable("MstProjects", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       progress: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       obstacle: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       sectionId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'MstSections',
-          key: 'id'
-        }
+          model: "MstSections",
+          key: "id",
+        },
+      },
+      targetTime: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('MstProjects');
-  }
+    await queryInterface.dropTable("MstProjects");
+  },
 };

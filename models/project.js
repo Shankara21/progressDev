@@ -28,6 +28,9 @@ module.exports = function (sequelize, DataTypes) {
           key: "id",
         },
       },
+      targetTime: {
+        type: DataTypes.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

@@ -12,6 +12,7 @@ var categoryRouter = require('./routes/category');
 var projectRouter = require('./routes/project');
 var projectDetailRouter = require('./routes/projectdetails');
 var sectionRouter = require('./routes/section');
+var sectionCategoryRouter = require('./routes/sectionCategory');
 
 var app = express();
 app.use((req, res, next) => {
@@ -35,6 +36,7 @@ app.use('/categories', categoryRouter);
 app.use('/projects', projectRouter);
 app.use('/projectdetails', projectDetailRouter);
 app.use('/sections', sectionRouter);
+app.use('/sectioncategories', sectionCategoryRouter);
 
 
 module.exports = app;

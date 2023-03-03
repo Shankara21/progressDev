@@ -19,8 +19,8 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      const { name, category, sectionId } = req.body;
-      const project = await Project.create({ name, sectionId });
+      const { name, category, sectionId, targetTime } = req.body;
+      const project = await Project.create({ name, sectionId, targetTime });
       // find latest project
       const latestProject = await Project.findOne({
         order: [["id", "DESC"]],
@@ -52,7 +52,7 @@ module.exports = {
       const projectByProjectId = await ProjectDetails.findAll({
         where: { projectId: projectId },
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["createdAt"],
         },
       });
       const projectDone = await ProjectDetails.findAll({
@@ -160,6 +160,7 @@ module.exports = {
           projectId: id,
         },
       });
+      let check;
       for (let i = 0; i < countByProjectId; i++) {
         const projectDetailsFound = await ProjectDetails.findOne({
           where: {
@@ -168,12 +169,27 @@ module.exports = {
         });
         // menghapus file yang ada di folder uploads
         // membaca file yang ada di folder uploads
-        fs.readdirSync("public/uploads").forEach((file) => {
-          // menghapus file yang ada di folder uploads
-          if (projectDetailsFound.document ) {
-            fs.unlinkSync(`public/${projectDetailsFound.document}`);
-          }
-        });
+        // fs.readdirSync("public/").forEach((file) => {
+        //   // menghapus file yang ada di folder uploads
+        // });
+        // jika document tidak null dan ada di folder uploads
+        // maka hapus file yang ada di folder uploads
+
+        check = fs.existsSync(`public/${projectDetailsFound.document}`);
+        if (check) {
+          fs.unlinkSync(`public/${projectDetailsFound.document}`);
+        }
+        // if (projectDetailsFound.document) {
+        //   check = fs.existsSync(`public/${projectDetailsFound.document}`);
+        //   if (check) {
+        //     // fs.unlinkSync(`public/${projectDetailsFound.document}`);
+        //     res.json(check);
+        //   }
+        //   // res.json({ message: "ada" });
+        // }
+
+        // if (projectDetailsFound.document) {
+        // }
         await ProjectDetails.destroy({
           where: {
             id: projectDetailsFound.id,
