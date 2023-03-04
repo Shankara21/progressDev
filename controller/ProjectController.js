@@ -183,4 +183,37 @@ module.exports = {
       console.log(error);
     }
   },
+  filterBySectionProject: async (req, res) => { 
+    try {
+      const { year, section } = req.params;
+      const sectionFound = await Section.findOne({
+        where: { code: section },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+      const projects = await Project.findAll({
+        where: {
+          sectionId: sectionFound.id,
+          createdAt: {
+            [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+          },
+        },
+        attributes: {
+          exclude: ["updatedAt"],
+        },
+        include: [
+          {
+            model: Section,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+          },
+        ],
+      });
+      res.status(200).json({ projects, sectionFound });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
