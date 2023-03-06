@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.FLOAT,
       },
       obstacle: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       sectionId: {
         type: DataTypes.INTEGER,

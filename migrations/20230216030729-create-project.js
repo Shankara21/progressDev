@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.FLOAT,
       },
       obstacle: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       sectionId: {
         type: Sequelize.INTEGER,
